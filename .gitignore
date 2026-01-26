@@ -1,7 +1,6 @@
 # Data and Output Directories
 data/
 output/
-*.csv
 *.json
 sampled_*/
 triad_*/
