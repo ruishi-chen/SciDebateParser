@@ -52,12 +52,7 @@ debate-triad-processor/
 GROBID is required for converting PDFs to structured XML. Start it using Docker:
 
 ```bash
-docker run -p 8070:8070 lfoppiano/grobid:0.8.0
-```
-
-Verify it's running:
-```bash
-curl http://localhost:8070/api/isalive
+docker run --rm --platform linux/amd64 -p 8070:8070 elifesciences/sciencebeam-parser
 ```
 
 ### 2. OpenAI API Key
