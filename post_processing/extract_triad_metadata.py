@@ -116,9 +116,10 @@ def extract_triad_metadata(pdfs_dir: str, output_csv: str):
 
 
 if __name__ == "__main__":
-    # Define paths
+    # Define paths (script is in post_processing/, so go up one level for project root)
     script_dir = Path(__file__).parent
-    pdfs_dir = script_dir / "PDFs"
-    output_csv = script_dir / "triad_metadata.csv"
+    project_root = script_dir.parent
+    pdfs_dir = project_root / "PDFs"
+    output_csv = project_root / "data" / "triad_metadata.csv"
 
     extract_triad_metadata(str(pdfs_dir), str(output_csv))

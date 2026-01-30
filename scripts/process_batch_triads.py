@@ -30,8 +30,10 @@ import os
 import sys
 from dotenv import load_dotenv
 
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent / "src" / "pdf_extract"))
+# Add project root and src to path for imports (script is in scripts/)
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root / "src" / "pdf_extract"))
+sys.path.insert(0, str(project_root / "scripts"))
 
 from triad_processor_batch import TriadProcessorBatch
 

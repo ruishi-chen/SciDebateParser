@@ -63,8 +63,10 @@ def move_invalid_triads(csv_path: str, pdfs_dir: str):
 
 
 if __name__ == "__main__":
+    # Define paths (script is in post_processing/, so go up one level for project root)
     script_dir = Path(__file__).parent
-    csv_path = script_dir / "IV_triads.csv"
-    pdfs_dir = script_dir / "PDFs"
+    project_root = script_dir.parent
+    csv_path = project_root / "data" / "IV_triads.csv"
+    pdfs_dir = project_root / "PDFs"
 
     move_invalid_triads(str(csv_path), str(pdfs_dir))

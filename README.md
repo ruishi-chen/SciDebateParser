@@ -27,11 +27,11 @@ The pipeline extracts, structures, and analyzes these papers to determine if the
 academic_pdf_parsing/
 ├── README.md
 ├── requirements.txt
-├── batch_processing_helpers.py      # Helper functions for batch processing
 │
 ├── scripts/                         # Processing and analysis scripts
 │   ├── process_batch_triads.py      # Main entry point for batch processing
 │   ├── triad_processor_batch.py     # Core processing logic
+│   ├── batch_processing_helpers.py  # Helper functions for batch processing
 │   ├── sample_random_triads.py      # Sample triads from dataset
 │   ├── calculate_accuracy.py        # Calculate prediction accuracy
 │   ├── generate_results_csv.py      # Generate results CSV
@@ -66,6 +66,7 @@ academic_pdf_parsing/
 Contains all processing and analysis scripts:
 - **`process_batch_triads.py`**: Main entry point for running the batch processing pipeline
 - **`triad_processor_batch.py`**: Core logic for processing individual triads through all pipeline steps
+- **`batch_processing_helpers.py`**: Helper functions for batch processing (OpenAI API calls, text processing)
 - **`sample_random_triads.py`**: Utility to sample random triads from a larger dataset
 - **`calculate_accuracy.py`**: Calculate accuracy metrics for processed triads
 - **`generate_results_csv.py`**: Generate summary CSV from processed results

@@ -15,8 +15,11 @@ import sys
 from typing import Optional, Dict
 from dotenv import load_dotenv
 
-# Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent / "src" / "pdf_extract"))
+# Add project root, src and utils to path for imports (script is in scripts/)
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root / "src" / "pdf_extract"))
+sys.path.insert(0, str(project_root / "utils"))
+sys.path.insert(0, str(project_root / "scripts"))
 
 from xml_preprocessor import extract_metadata_from_xml
 from extract_text_from_pdf import extract_and_save_pdf_text
