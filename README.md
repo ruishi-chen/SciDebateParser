@@ -24,26 +24,77 @@ The pipeline extracts, structures, and analyzes these papers to determine if the
 ## Project Structure
 
 ```
-debate-triad-processor/
-├── process_batch_triads.py          # Main entry point
-├── triad_processor_batch.py         # Core processing logic
-├── batch_processing_helpers.py      # Helper functions
-├── src/
-│   └── pdf_extract/
-│       ├── extractor.py             # PDF text extraction
-│       └── xml_preprocessor.py      # XML metadata extraction
-├── utils/
-│   ├── extract_text_from_pdf.py     # PDF text extraction utility
-│   ├── process_triad_with_openai.py # OpenAI structuring
-│   └── analyze_triad_relationships.py # Relationship analysis
-├── scripts/
+academic_pdf_parsing/
+├── README.md
+├── requirements.txt
+├── batch_processing_helpers.py      # Helper functions for batch processing
+│
+├── scripts/                         # Processing and analysis scripts
+│   ├── process_batch_triads.py      # Main entry point for batch processing
+│   ├── triad_processor_batch.py     # Core processing logic
 │   ├── sample_random_triads.py      # Sample triads from dataset
 │   ├── calculate_accuracy.py        # Calculate prediction accuracy
 │   ├── generate_results_csv.py      # Generate results CSV
 │   └── analyze_results.py           # Analyze processing results
-├── .gitignore
-└── README.md
+│
+├── post_processing/                 # Post-processing and analysis tools
+│   ├── extract_triad_metadata.py    # Extract metadata from processed triads to CSV
+│   ├── move_invalid_triads.py       # Move invalid triads to separate folder
+│   └── summary.ipynb                # Jupyter notebook for data analysis
+│
+├── src/                             # Core source modules
+│   └── pdf_extract/
+│       ├── extractor.py             # PDF text extraction
+│       └── xml_preprocessor.py      # XML metadata extraction
+│
+├── utils/                           # Utility modules
+│   ├── extract_text_from_pdf.py     # PDF text extraction utility
+│   ├── process_triad_with_openai.py # OpenAI structuring
+│   └── analyze_triad_relationships.py # Relationship analysis
+│
+└── data/                            # CSV data files
+    ├── 00_triads_filtered0920.csv   # Input triads dataset
+    ├── triad_results_status.csv     # Processing status for all triads
+    ├── triad_metadata.csv           # Extracted metadata from all processed triads
+    ├── triad_metadata_missing.csv   # List of triads missing summary.json
+    └── IV_triads.csv                # List of invalid triads
 ```
+
+## Folder Descriptions
+
+### `scripts/`
+Contains all processing and analysis scripts:
+- **`process_batch_triads.py`**: Main entry point for running the batch processing pipeline
+- **`triad_processor_batch.py`**: Core logic for processing individual triads through all pipeline steps
+- **`sample_random_triads.py`**: Utility to sample random triads from a larger dataset
+- **`calculate_accuracy.py`**: Calculate accuracy metrics for processed triads
+- **`generate_results_csv.py`**: Generate summary CSV from processed results
+- **`analyze_results.py`**: Analyze and visualize processing results
+
+### `post_processing/`
+Tools for analyzing and organizing processed triads:
+- **`extract_triad_metadata.py`**: Scans all triad folders and extracts metadata (prediction_label, papers_talking_to_each_other, flag, explanation) into a CSV
+- **`move_invalid_triads.py`**: Moves triads marked as invalid (IV) to a separate folder
+- **`summary.ipynb`**: Jupyter notebook for exploratory data analysis
+
+### `src/`
+Core source modules for PDF processing:
+- **`pdf_extract/extractor.py`**: PDF text extraction functionality
+- **`pdf_extract/xml_preprocessor.py`**: XML parsing and metadata extraction from GROBID output
+
+### `utils/`
+Utility modules used by the main pipeline:
+- **`extract_text_from_pdf.py`**: Extract raw text from PDF files
+- **`process_triad_with_openai.py`**: Use OpenAI GPT-4 to structure extracted text
+- **`analyze_triad_relationships.py`**: Analyze relationships between papers in a triad
+
+### `data/`
+CSV data files for input and output:
+- **`00_triads_filtered0920.csv`**: Original input dataset of triads to process
+- **`triad_results_status.csv`**: Processing status tracking for all triads
+- **`triad_metadata.csv`**: Extracted metadata from all processed triads
+- **`triad_metadata_missing.csv`**: Triads that are missing summary.json (incomplete processing)
+- **`IV_triads.csv`**: List of triads classified as invalid
 
 ## Prerequisites
 
@@ -83,9 +134,9 @@ pip install openai python-dotenv pdfminer.six requests
 Process triads from a CSV file:
 
 ```bash
-python process_batch_triads.py \
+python scripts/process_batch_triads.py \
   --csv data/sample.csv \
-  --output-dir data/triad_output \
+  --output-dir PDFs/final_generation \
   --pdfs-dir data/pdfs
 ```
 
@@ -94,35 +145,49 @@ python process_batch_triads.py \
 **Process subset of triads:**
 ```bash
 # First 10 triads
-python process_batch_triads.py --csv data/sample.csv --limit 10
+python scripts/process_batch_triads.py --csv data/sample.csv --limit 10
 
 # Triads 20-30
-python process_batch_triads.py --csv data/sample.csv --start-from 20 --limit 10
+python scripts/process_batch_triads.py --csv data/sample.csv --start-from 20 --limit 10
 ```
 
 **Process single triad:**
 ```bash
-python process_batch_triads.py --csv data/sample.csv --triad-index 42
+python scripts/process_batch_triads.py --csv data/sample.csv --triad-index 42
 ```
 
 **Resume from specific step:**
 ```bash
 # Re-generate only final outputs (step 6)
-python process_batch_triads.py --csv data/sample.csv --start-from-step 6
+python scripts/process_batch_triads.py --csv data/sample.csv --start-from-step 6
 
 # Start from relationship analysis (step 5)
-python process_batch_triads.py --csv data/sample.csv --start-from-step 5
+python scripts/process_batch_triads.py --csv data/sample.csv --start-from-step 5
 ```
 
 **Force regeneration:**
 ```bash
-python process_batch_triads.py --csv data/sample.csv --force-regenerate
+python scripts/process_batch_triads.py --csv data/sample.csv --force-regenerate
 ```
 
 **Skip specific triads:**
 ```bash
-python process_batch_triads.py --csv data/sample.csv --skip-indices "6925,6930,6935"
+python scripts/process_batch_triads.py --csv data/sample.csv --skip-indices "6925,6930,6935"
 ```
+
+### Post-Processing
+
+**Extract metadata from all processed triads:**
+```bash
+python post_processing/extract_triad_metadata.py
+```
+This generates `data/triad_metadata.csv` and `data/triad_metadata_missing.csv`.
+
+**Move invalid triads to separate folder:**
+```bash
+python post_processing/move_invalid_triads.py
+```
+This moves all triads listed in `data/IV_triads.csv` to `PDFs/Invalid_triads/`.
 
 ### Command-Line Arguments
 
@@ -225,17 +290,17 @@ python scripts/sample_random_triads.py --input data/all_triads.csv --output data
 
 ### Calculate Accuracy
 ```bash
-python scripts/calculate_accuracy.py --results-dir data/triad_output
+python scripts/calculate_accuracy.py --results-dir PDFs/final_generation
 ```
 
 ### Generate Results CSV
 ```bash
-python scripts/generate_results_csv.py --input-dir data/triad_output --output results.csv
+python scripts/generate_results_csv.py --input-dir PDFs/final_generation --output data/results.csv
 ```
 
 ### Analyze Results
 ```bash
-python scripts/analyze_results.py --csv results.csv
+python scripts/analyze_results.py --csv data/results.csv
 ```
 
 ## Error Handling
