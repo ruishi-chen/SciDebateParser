@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this software or dataset, please cite it using the metadata below."
+title: "SciDebateParser: A Pipeline for Parsing PDFs of Debated Scientific Articles"
+type: dataset
+version: "1"
+date-released: 2026-07-14
+authors:
+  - family-names: Chen
+    given-names: "R."
+  - family-names: Zhang
+    given-names: "H."
+  - family-names: Verdi
+    given-names: "D. A."
+  - family-names: Smith
+    given-names: "D. S."
+  - family-names: McFarland
+    given-names: "D. A."
+repository-code: "https://github.com/ruishi-chen/SciDebateParser"
+abstract: >-
+  SciDebateParser is an automated pipeline for parsing publicly debated
+  scientific articles.
+keywords:
+  - academic-debate
+  - pdf-parsing
+  - scientific-articles
+  - corpus-construction
+  - argument-mining
+license: MIT
